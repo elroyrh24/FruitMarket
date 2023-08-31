@@ -4,7 +4,7 @@ stockApel = 8
 stockJeruk = 7
 stockAnggur = 6
 
-#  =Text jika lebih dari Stock yg beli
+#  Text jika lebih dari Stock yg beli
 rejectionText = "Jumlah yang dimasukkan terlalu banyak "
 
 # Tanya jumlah per buah
