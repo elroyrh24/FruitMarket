@@ -1,4 +1,14 @@
-
+#global vars
+totalHargaApel = 0
+totalHargaJeruk = 0
+totalHargaAnggur = 0
+hargaTotal = 0
+jumlahApel = 0
+jumlahJeruk = 0
+jumlahAnggur = 0
+hargaApel = 10000
+hargaJeruk = 15000
+hargaAnggur = 20000
 # Stock
 stockApel = 8
 stockJeruk = 7
@@ -7,55 +17,50 @@ stockAnggur = 6
 #  Text jika lebih dari Stock yg beli
 rejectionText = "Jumlah yang dimasukkan terlalu banyak "
 
+### F   U   N   C   T   I   O   N   S ###
+
 # Tanya jumlah per buah
-jumlahApel = int(input("Masukkan jumlah Apel : "))
-while jumlahApel > stockApel:
-    print(rejectionText)
-    print(f"Stock Apel tinggal: {stockApel}")
-    jumlahApel = int(input("Masukkan jumlah Apel : "))
-jumlahJeruk = int(input("Masukkan jumlah Jeruk : "))
-while jumlahJeruk > stockJeruk:
-    print(rejectionText)
-    print(f"Stock Jeruk tinggal: {stockJeruk}")
-    jumlahJeruk = int(input("Masukkan jumlah Jeruk : "))
-jumlahAnggur = int(input("Masukkan jumlah Anggur : "))
-while jumlahAnggur > stockAnggur:
-    print(rejectionText)
-    print(f"Stock Anggur tinggal: {stockAnggur}")
-    jumlahAnggur = int(input("Masukkan jumlah Anggur : "))
+def input_fruit(name, stock, price):
+    while True:
+        n = int(input(f"Input jumlah {name.capitalize()}: "))
+        if n <= stock:
+            price = n * price
+            break
+        else:
+            print(f"Jumlah terlalu banyak. {name.capitalize()} sisa {stock}")
+    return price
 
-# Kurangi yg beli dari stock
-stockApel -= jumlahApel
-stockJeruk -= jumlahJeruk
-stockAnggur -=jumlahAnggur
+# Harga buah dikali dengan jumlahnya + harga total semua
 
-# Harga buah dikali dengan jumlahnya
-totalHargaApel = jumlahApel * 10000
-totalHargaJeruk = jumlahJeruk * 15000
-totalHargaAnggur = jumlahAnggur * 20000
+totalHargaApel = input_fruit('apel', stockApel, hargaApel)
+totalHargaJeruk = input_fruit("jeruk", stockJeruk, hargaJeruk)
+totalHargaAnggur = input_fruit("anggur", stockAnggur, hargaAnggur)
 
-# Total harga semua buah dibeli tergabung
-hargaTotal = totalHargaApel + totalHargaJeruk + totalHargaAnggur
-
+hargaTotal = totalHargaApel + totalHargaAnggur + totalHargaJeruk
 # Printout / Receipt
 print(
     f"""
-Detail Belanja
+    Detail Belanja
 
-Apel   : {jumlahApel} x 10000 = {totalHargaApel}
-Jeruk  : {jumlahJeruk} x 15000 = {totalHargaJeruk}
-Anggur : {jumlahAnggur} x 20000 = {totalHargaAnggur}
+    Apel   : {jumlahApel} x 10000 = {totalHargaApel}
+    Jeruk  : {jumlahJeruk} x 15000 = {totalHargaJeruk}
+    Anggur : {jumlahAnggur} x 20000 = {totalHargaAnggur}
 
-Total : {hargaTotal}
-"""
+    Total : {hargaTotal}
+    """
 )
 
 # Minta duit
-if hargaTotal > 0:
-    uangDiberikan = int(input("Masukkan jumlah uang : "))
-    while uangDiberikan < hargaTotal:
-        print(f"Uang anda kurang sebesar {hargaTotal - uangDiberikan}")
-        uangDiberikan = int(input("Masukkan jumlah uang : "))
-    print("Terima kasih")
-    if uangDiberikan > hargaTotal :
-        print(f"Uang kembali anda {uangDiberikan - hargaTotal}")
+duitDikasih = int(input("Masukkan jumlah uang : "))
+while duitDikasih < hargaTotal:
+    print(f"Uang anda kurang sebesar {hargaTotal-duitDikasih}")
+    duitDikasih = int(input("Masukkan jumlah uang : "))
+print("Terima kasih")
+if duitDikasih > hargaTotal:
+    print(f"Uang kembali anda {duitDikasih - hargaTotal}")
+
+# Kurangi yg beli dari stock
+
+stockApel -= jumlahApel
+stockJeruk -= jumlahJeruk
+stockAnggur -= jumlahAnggur
