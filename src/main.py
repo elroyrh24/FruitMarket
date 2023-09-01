@@ -30,6 +30,21 @@ def input_fruit(name, stock, price):
             print(f"Jumlah terlalu banyak. {name.capitalize()} sisa {stock}")
     return price
 
+    """
+
+    Fungsi membeli buah
+
+    Args:
+        name(string): nama buah
+        stock(integer): stock buah terkini
+        price(integer): harga buah terkini
+    
+    Returns:
+        n : jumlah buah
+        price : harga buah terkini
+    
+    """
+
 # Harga buah dikali dengan jumlahnya + harga total semua
 
 totalHargaApel = input_fruit('apel', stockApel, hargaApel)
@@ -49,6 +64,8 @@ print(
     Total : {hargaTotal}
     """
 )
+
+
 
 # Minta duit
 duitDikasih = int(input("Masukkan jumlah uang : "))
