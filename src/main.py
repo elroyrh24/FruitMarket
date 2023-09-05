@@ -1,10 +1,26 @@
 import fruitmarket
+import os
 
-daftarBuah = [['Index','Nama','Stock','Harga'],
-              [0, 'Apel', 20, 10000],
-              [1, 'Jeruk', 15, 15000],
-              [2, 'Anggur', 25, 20000]
-              ]
+def clear_screen():
+    """Fungsi membersihkan layar prompt
+    """    
+    if os.name == 'nt':
+        _ = os.system('cls')
+    else:
+        _ = os.system('clear')
+
+
+# daftarBuah = [['Index','Nama','Stock','Harga'],
+#               [0, 'Apel', 20, 10000],
+#               [1, 'Jeruk', 15, 15000],
+#               [2, 'Anggur', 25, 20000]
+#               ]
+
+daftarBuah = {'header':['Index','Nama','Stock','Harga'],
+               'apel':[0,'Apel',20,10000],
+               'jeruk':[1,'Jeruk',15,15000],
+               'anggur':[2,'Anggur',25,20000]
+               }
 
 #  Text jika lebih dari Stock yg beli
 rejectionText = "Jumlah yang dimasukkan terlalu banyak "

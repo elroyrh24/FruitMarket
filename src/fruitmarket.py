@@ -1,65 +1,163 @@
 from tabulate import tabulate
 
+
 def show(database, title='Daftar Buah Tersedia'):
-    header = database[0]
-    data = database[1:]
+
+    """
+    fungsi menampilkan daftar buah
+    
+    Args:
+        database (dict): database buah
+        title (str, optional): judul tabel data buah. Default 'Daftar Buah Tersedia'
+    """    
+    # 
+    header = database['header']
+    data = list(database.values())[1:]
+
+    # print tabel
     print(tabulate(data, header, tablefmt="outline"))
 
 def add(database):
+
+    """_summary_
+    
+    Args:
+        database(dict) : database buah
+    Returns:
+        dict: database buah terbaru
+    """   
+    #input buah baru
     name = input("Input nama buah: ").capitalize()
     stock = int(input('Input stock buah: '))
     price = int(input('Ínput harga buah: '))
     index = len(database) - 1
 
-    database = database.append([
-        index, name, stock, price]
-    )
+    #update database 
+    database.update({
+        f'{name}': [index, name.capitalize(), stock, price]
+    })
     return database
 
 def delete(database):
+
+    """
+    Fungsi menghapus buah dari database
+
+    Args:
+        database(dict): database buah
+
+    Returns:
+        dict : database buah terbaru
+    """    
+    #show data before
+
+    show(database,'Daftar Buah Tersedia')
+
+    # input index
     index = int(input('Input indeks buah yang akan dihapus: '))
-    for idx, val in enumerate(database[1:]):
-        if index == val[0]:
-            print(database[idx+1])
-            del database[idx+1]
+
+    # hapus buah berdasarkan index
+    for key, val in database.items():
+        if 'header' in val:
+            continue
+        elif index == val[0]:
+            del database[key]
             break
         elif index > len(database) - 1:
             print('Buah yang dicari tidak ada')
             break
+
+    # update indeks buah
+    for i, val in enumerate(list(database.values())):
+        if 'Index' in val:
+            continue
+        elif val[0] > i-1:
+            val[0] -= 1
+            database.update(
+                {
+                    val[1].lower(): val
+                }
+            )
+            
+    # show data after
+    show(database,'Daftar Buah Tersedia')
+
     return database
 
 def buy(database):
-    tabley = [['Index','Qty','Harga']]
-    header = tabley[0]
-    hargaTotal = 0
-    while True:
-        index = int(input("Masukkan indeks buah yang ingin dibeli: "))
-        stock = int(input("Masukkan jumlah yang ingin dibeli: "))
-        for idx, val in enumerate(database):
-            if index == val[0]:
-                if stock > val[2]:
-                    print(f"Stock tidak cukup, stock {val[1]} tinggal {val[2]}")
+    """Fungsi membeli buah
+
+    Args:
+        database (List): Database buah
+
+    Returns:
+        List: Database terbaru
+    """    
+    chart = {
+        'header': ['Nama', 'Qty', 'Harga'],
+    }
+
+    # show data
+    show(database)
+
+    # buying process
+    rebuy = 'YES'
+    while rebuy == 'YES':
+        index = int(input('Input indeks buah: '))
+        count = int(input('Input jumlah buah: '))
+
+        for item in database.values():
+            if index in item:
+                id, name, stock, price = item
+                if count <= stock:
+                    chart.update(
+                        {
+                            f'{name.lower()}': [name, count, price]
+                        }
+                    )
+                    database.update(
+                        {
+                            f'{name.lower()}' : [id, name, stock-count, price]
+                        }
+                    ) 
                 else:
-                    tabley.append([val[0], val[2], val[3]])
-                    print(tabley)
-        restoftable = tabley[1:]
-        print("Isi Cart:")
-        print(tabulate(restoftable,header,tablefmt="outline"))
-        check = input("Mau beli yang lain? (ya/tidak)").capitalize()
-        if check == "Tidak":
+                    print(f'Stock {name} sisa {stock}')
+                break
+        
+        show(chart)
+        rebuy = input('Beli yang lain? (yes/no): ').upper()
+    
+    # calculate total price
+    sumPrice = 0
+    for item in chart.values():
+        if 'nama' in item:
+            item.append('total')
+            chart.update(
+                {
+                    'header': item
+                }
+            )
+        else:
+            totalPrice = int(item[1])*int(item[2])
+            item.append(totalPrice)
+            chart.update(
+                {
+                    f'{item[0].lower()}': item
+                }
+            )
+            sumPrice += totalPrice
+
+    show(chart)
+    print(f'Total belanja Anda: {sumPrice}')
+
+    # payment process
+    while True:
+        pay = int(input('Masukkan jumlah uang: '))
+        delta = pay - sumPrice
+        if delta >= 0:
+            print(f'Terima kasih. Uang kembalian {delta}')
             break
-    tabley[0].append('Total Harga')
-    for ind, value in enumerate(tabley[1:]):
-        value.append(value[2]*value[1])
-        hargaTotal += (value[2]*value[1])
-    restoftable = tabley[1:]
-    print("Daftar Belanja : ")
-    print(tabulate(restoftable,header,tablefmt="outline"))
-    print(f"Total Yang Harus Dibayar : {hargaTotal}")
-    duitDikasih = int(input("Masukkan jumlah uang : "))
-    while duitDikasih < hargaTotal:
-        print(f"Uang anda kurang sebesar {hargaTotal-duitDikasih}")
-        duitDikasih = int(input("Masukkan jumlah uang : "))
-    print("Terima kasih")
-    if duitDikasih > hargaTotal:
-        print(f"\nUang kembali anda {duitDikasih - hargaTotal}")
+        else:
+            print(f'Uang anda kurang sebesar {abs(delta)}')
+
+    return database
